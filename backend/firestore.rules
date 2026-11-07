@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Es admin quien tiene un documento en admins/{su uid}. Ese documento se crea a mano en la consola.
+    function isAdmin() {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Catálogo de experiencias: lo ve todo el mundo, solo el admin lo modifica.
+    match /experiences/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Porcentajes del precio justo (settings/pricing): públicos para mostrar el desglose, solo el admin los cambia.
+    match /settings/{id} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Formulario de contacto: cualquiera crea (con campos y tamaños controlados), solo el admin lee o gestiona.
+    match /messages/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['name', 'email', 'message', 'createdAt', 'read'])
+                    && request.resource.data.name is string && request.resource.data.name.size() <= 100
+                    && request.resource.data.email is string && request.resource.data.email.size() <= 200
+                    && request.resource.data.message is string && request.resource.data.message.size() <= 1000
+                    && request.resource.data.read == false;
+      allow read, update, delete: if isAdmin();
+    }
+
+    // Lista de administradores: cada uno solo puede leer su propio documento; nadie escribe desde la app.
+    match /admins/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+  }
+}
