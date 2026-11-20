@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import { BRAND } from '../config'
 import { useAuth } from '../hooks/useAuth'
+import Logo from './Logo'
 
 export default function Navbar() {
   const [abierto, setAbierto] = useState(false)
@@ -11,7 +12,13 @@ export default function Navbar() {
   return (
     <header className="navbar">
       <div className="container navbar__inner">
-        <Link to="/" className="navbar__brand" onClick={cerrar}>{BRAND.nombre}</Link>
+        <Link to="/" className="navbar__brand" onClick={cerrar}>
+          <Logo className="navbar__logo" />
+          <span>
+            {BRAND.corto}
+            <small>{BRAND.subtitulo}</small>
+          </span>
+        </Link>
         <button
           className="navbar__toggle"
           aria-label="Abrir menú"
