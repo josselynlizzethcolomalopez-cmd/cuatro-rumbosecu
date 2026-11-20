@@ -56,3 +56,12 @@ Por defecto responde con reglas locales usando el catálogo real y el tono de la
 ## Personalizar la marca
 
 Todo el texto de la marca (nombre, eslogan, valores, contacto) está en `frontend/src/config.js`; los colores, en las variables al inicio de `frontend/src/styles/global.css`.
+
+## Imágenes y créditos
+Las fotos de los cuatro mundos están en `frontend/public/img/` (`hero.jpg`, `costa.jpg`, `sierra.jpg`, `oriente.jpg`, `galapagos.jpg`). Son imágenes ilustrativas del proyecto académico (algunas generadas con IA). Si falta una foto, el sitio muestra un degradado de color en su lugar.
+
+## Diseño
+Paleta "bosque y lima": verde bosque `#1f5a35`, lima `#c5e04b` y crema `#f7f5df`. Tipografías Fraunces (títulos) y DM Sans (texto).
+
+## Contacto del proyecto
+cuatrorumbosecu@gmail.com
