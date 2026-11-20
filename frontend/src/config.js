@@ -9,7 +9,7 @@ export const BRAND = {
     'Conectamos a viajeros con negocios y comunidades locales de Ecuador. Cada experiencia te muestra cuánto de tu pago llega a quien la ofrece.',
   tono: 'cercano, amable y entusiasta, sin exagerar',
   email: 'cuatrorumbosecu@gmail.com',
-  telefono: '+593 00 000 0000',
+  telefono: '+593 99 527 3780',
   ciudad: 'Ecuador',
   // Tres razones por las que elegirnos (aparecen en el Home)
   valores: [
