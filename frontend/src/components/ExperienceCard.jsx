@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { MUNDOS, DIFICULTADES } from '../config'
+import { MUNDOS, DIFICULTADES, urlFoto } from '../config'
 import { desglosarPrecio, usd } from '../services/precio'
 
 // Tarjeta de experiencia. Lo central del proyecto: el viajero ve cuánto del precio llega al negocio local.
@@ -9,13 +9,26 @@ export default function ExperienceCard({ experiencia: e, pricing, index = 0 }) {
 
   return (
     <motion.article
-      className="card"
+      className="card card--media"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.4, delay: Math.min(index * 0.06, 0.3) }}
     >
-      {e.imageUrl && <img className="card__img" src={e.imageUrl} alt={e.title} loading="lazy" />}
+      {/* Si la experiencia tiene foto se muestra; si no, un banner con el color y el icono de su mundo */}
+      {e.imageUrl
+        ? <img className="card__img" src={e.imageUrl} alt={e.title} loading="lazy" />
+        : (
+          // Sin foto propia: usamos la foto de su mundo (public/img/<mundo>.jpg) o, si no existe, un degradado
+          <div
+            className={`card__banner card__banner--${mundo ? e.world : 'default'}`}
+            style={mundo ? { '--foto': `url(${urlFoto(e.world)})` } : undefined}
+            aria-hidden="true"
+          >
+            <span>{mundo?.icono ?? '🧭'}</span>
+          </div>
+        )}
+      <div className="card__body">
       <div>
         {mundo && <span className={`badge badge--${e.world}`}>{mundo.nombre}</span>}{' '}
         {e.isExample && <span className="badge badge--ejemplo">Ejemplo</span>}
@@ -39,6 +52,7 @@ export default function ExperienceCard({ experiencia: e, pricing, index = 0 }) {
         <p className="muted fair__rest">
           Plataforma {usd(d.plataforma)} ({d.pctPlataforma} %) · Fondo comunitario {usd(d.fondo)} ({d.pctFondo} %)
         </p>
+      </div>
       </div>
     </motion.article>
   )
