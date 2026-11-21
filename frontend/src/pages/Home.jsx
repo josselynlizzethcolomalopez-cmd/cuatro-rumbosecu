@@ -15,6 +15,8 @@ const aparecer = {
 
 export default function Home() {
   const { experiencias, pricing, cargando } = useExperiencias()
+  // Destacadas: la primera experiencia de cada mundo, para mostrar variedad en el inicio.
+  const destacadas = Object.keys(MUNDOS).map((m) => experiencias.find((x) => x.world === m)).filter(Boolean)
   // Porcentajes para el bloque explicativo del precio justo (si no hay Firestore, usa los de ejemplo).
   const p = pricing ?? PRICING_DEFECTO
   const pctPlat = Math.round(p.platformPct * 100)
@@ -125,8 +127,8 @@ export default function Home() {
           <h2>Experiencias destacadas</h2>
         </motion.div>
         {cargando ? <Loader /> : (
-          <div className="grid grid--3">
-            {experiencias.slice(0, 3).map((x, i) => <ExperienceCard key={x.id} experiencia={x} pricing={pricing} index={i} />)}
+          <div className="grid grid--cat">
+            {destacadas.map((x, i) => <ExperienceCard key={x.id} experiencia={x} pricing={pricing} index={i} />)}
           </div>
         )}
         <p><Link to="/experiencias">Ver todo el catálogo →</Link></p>
