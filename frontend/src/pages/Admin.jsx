@@ -6,6 +6,7 @@ import {
 } from '../services/experienciasApi'
 import { desglosarPrecio, usd } from '../services/precio'
 import { MUNDOS, DIFICULTADES } from '../config'
+import { LUGARES_EJEMPLO } from '../data/lugaresEjemplo'
 import { eliminarMensaje, listarMensajes, marcarLeido } from '../services/mensajesApi'
 import Loader from '../components/Loader'
 import ErrorMessage from '../components/ErrorMessage'
@@ -44,6 +45,22 @@ function GestorExperiencias() {
   const cambiar = (e) => {
     const { name, value, type, checked } = e.target
     setForm({ ...form, [name]: type === 'checkbox' ? checked : value })
+  }
+
+  // Carga el catálogo de ejemplo (21 lugares) en Firestore. Omite los que ya existen por título.
+  async function cargarEjemplos() {
+    setGuardando(true)
+    setMsg('')
+    try {
+      const existentes = new Set(experiencias.map((x) => x.title))
+      const nuevos = LUGARES_EJEMPLO.filter((l) => !existentes.has(l.title))
+      for (const lugar of nuevos) await crearExperiencia(lugar)
+      await recargar()
+      setMsg(nuevos.length ? `Listo: se cargaron ${nuevos.length} lugares de ejemplo.` : 'Los lugares de ejemplo ya estaban cargados.')
+    } catch (err) {
+      console.error(err)
+      setMsg('No se pudieron cargar los lugares. ¿Tu cuenta está en la colección "admins"?')
+    } finally { setGuardando(false) }
   }
 
   async function guardar(e) {
@@ -88,7 +105,7 @@ function GestorExperiencias() {
     <>
       <form className="form form--wide" onSubmit={guardar}>
         <h2>{editId ? 'Editar experiencia' : 'Nueva experiencia'}</h2>
-        {msg && <div className="alert alert--error" role="alert">{msg}</div>}
+        {msg && <div className={msg.startsWith('Listo') || msg.startsWith('Los lugares') ? 'alert alert--ok' : 'alert alert--error'} role="alert">{msg}</div>}
         <div className="grid grid--2">
           <label>Título<input name="title" value={form.title} onChange={cambiar} /></label>
           <label>Mundo
@@ -122,6 +139,12 @@ function GestorExperiencias() {
           {editId && <button type="button" className="btn btn--ghost" onClick={() => { setEditId(null); setForm(VACIO) }}>Cancelar</button>}
         </div>
       </form>
+
+      <p>
+        <button type="button" className="btn btn--ghost" disabled={guardando} onClick={cargarEjemplos}>
+          Cargar los 21 lugares de ejemplo
+        </button>
+      </p>
 
       <h2>Experiencias ({experiencias.length})</h2>
       <ErrorMessage mensaje={error} onReintentar={recargar} />
