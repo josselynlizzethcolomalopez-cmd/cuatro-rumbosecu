@@ -5,6 +5,7 @@ import Chatbot from './components/Chatbot'
 import ProtectedRoute from './components/ProtectedRoute'
 import Home from './pages/Home'
 import Catalogo from './pages/Catalogo'
+import Detalle from './pages/Detalle'
 import Contacto from './pages/Contacto'
 import Login from './pages/Login'
 import Admin from './pages/Admin'
@@ -17,6 +18,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/experiencias" element={<Catalogo />} />
+          <Route path="/experiencias/:id" element={<Detalle />} />
           <Route path="/servicios" element={<Navigate to="/experiencias" replace />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/login" element={<Login />} />
